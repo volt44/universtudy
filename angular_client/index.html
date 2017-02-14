@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html ng-app="unibook">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>Universtudy</title>
+        
+        <link href="/angular_client/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" type="text/css">
+        <link rel="stylesheet" href="css/index.css">
+    </head>
+    <body ng-controller="RootController as rootCtrl">
+        
+        <script src="angular.js"></script>
+        <script src="angular-route.js"></script>
+        <script src="app.js"></script>
+
+        <div class="shelfTop">
+            <div class="container">
+
+                <div class="jumbotron" id="shelf" align="center">
+                    <h1>UNIVERSTUDY</h1>
+                    <h4 align="right">Portal</h4>
+                </div>
+
+            </div>
+        </div>
+        
+        <nav class="navbar navbar-default navbar-static-top navPanel">
+            <div class="container" ng-controller="LoginController as loginCtrl">
+                <header ng-hide="rootCtrl.isActive('login')">
+                         <ul class="nav navbar-nav navbar-left">
+                            <li><a ng-hide="rootCtrl.isTokenType('student')" ng-class="{selected:rootCtrl.isActive('employees')}" ng-click="rootCtrl.setActive('employees')">Employees</a></li>
+                            <li><a ng-hide="rootCtrl.isTokenType('student')" ng-class="{selected:rootCtrl.isActive('students')}" ng-click="rootCtrl.setActive('students')">Students</a></li>
+                            <li><a ng-class="{selected:rootCtrl.isActive('books')}" ng-click="rootCtrl.setActive('books')">Books</a></li>
+                            <li><a ng-class="{selected:rootCtrl.isActive('journals')}" ng-click="rootCtrl.setActive('journals')">Journals</a></li>
+                            <li><a ng-class="{selected:rootCtrl.isActive('papers')}" ng-click="rootCtrl.setActive('papers')">Papers</a></li>
+                         </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <h5 class="userInfo" ng-hide="rootCtrl.isTokenType('employee')">You are logged in as a Student</h5>
+                                <h5 class="userInfo" ng-hide="rootCtrl.isTokenType('student')">You are logged in as an Employee</h5>
+                            </li>
+                            <li>
+                                <a ng-hide="rootCtrl.isActive('login')" href="/angular_client/">
+                                    <button type="button" class="btn btn-sm btn-primary">
+                                        Logout
+                                    </button>
+                                </a>
+                            </li>
+                             <li>
+                                 <a ng-hide="rootCtrl.isTokenType('employee')" ng-class="{selected:rootCtrl.isActive('carts')}" ng-click="rootCtrl.setActive('carts')">
+                                    <button type="button" class="btn btn-default btn-sm">
+                                      <i class="fa fa-shopping-cart fa-md" aria-hidden="true"></i> Cart
+                                    </button>
+                                 </a>
+                            </li>
+                        </ul>
+                         
+                </header>
+            </div>
+        </nav>
+        
+        
+        
+        <div class="container">
+            <div class="jumbotron">
+                <div class="data">
+                    <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-8 col-md-offset-2" ng-controller="LoginController as loginCtrl" ng-show="rootCtrl.isActive('login')">
+                            <h2 class="text-center login-title">Login</h2>
+                            <div class="error">{{loginCtrl.error}}</div>
+                            <div class="account-wall">
+
+                                <form class="form-signin" name="loginForm" ng-submit="loginCtrl.authenticate()">
+                                <input type="text" name="email" ng-model="loginCtrl.user.email" class="form-control" placeholder="Email" required autofocus>
+                                <input type="password" name="password" ng-model="loginCtrl.user.password" class="form-control" placeholder="Password" required>
+                                <button class="btn btn-md btn-primary btn-block" type="submit" name="login">Sign in</button>
+<!--                                <button class="btn btn-md btn-primary btn-block" type="submit" name="register">Register</button>-->
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <div ng-controller="BooksController as booksCtrl" ng-show="rootCtrl.isActive('books')">
+                        <h4>{{booksCtrl.intro.title}}</h4>
+                        <p>{{booksCtrl.intro.subtitle}}</p>
+    
+                        <div class="row">
+                            <div class="col-lg-6" ng-repeat="book in booksCtrl.books">
+                                <div class="well book">
+                                    <img ng-src="images/{{book.image}}" class="images">
+                                    <h3>{{book.title}}</h3>
+                                    <h4>{{book.author}}</h4>
+                                    <h5>Copies: {{book.copies}}</h5>
+                                    <h5>Fiction: {{book.fiction}}</h5>
+                                    <h5>Original Language: {{book.original_lang}}</h5>
+                                    <h5>Cost to Buy: {{book.cost_buy}}</h5>
+                                    <h5>Cost to Borrow: {{book.cost_borrow}}</h5><br/>
+<!--                                    <h5>Description: {{book.description}}</h5>-->
+                                    <a ng-hide="rootCtrl.isTokenType('employee')" href ng:click="booksCtrl.buyBook(book)" class="btn-primary btn">Buy Item</a>&nbsp;<a ng-hide="rootCtrl.isTokenType('employee')" href ng:click="booksCtrl.rentBook(book)" class="btn-success btn">Rent Item</a>
+                                    <a ng-hide="rootCtrl.isTokenType('student')" href ng:click="" class="btn-primary btn">Edit Item</a>&nbsp;<a ng-hide="rootCtrl.isTokenType('student')" href ng:click="" class="btn-danger btn"><i class="fa fa-trash-o fa-sm"></i> Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div ng-controller="EmployeesController as employeesCtrl" ng-show="rootCtrl.isActive('employees')">
+                        <h4>{{employeesCtrl.intro.title}}</h4>
+                        <p>{{employeesCtrl.intro.subtitle}}</p>
+                        
+                        <div class="row">
+                            <div class="col-lg-6" ng-repeat="employee in employeesCtrl.employees">
+                                <div class="well employee" >
+                                    <h3>{{employee.name}}</h3>
+                                    <h4>{{employee.email}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div ng-controller="StudentsController as studentsCtrl" ng-show="rootCtrl.isActive('students')">
+                        <h4>{{studentsCtrl.intro.title}}</h4>
+                        <p>{{studentsCtrl.intro.subtitle}}</p>
+                        
+                        <div class="row">  
+                            <div class="col-lg-6" ng-repeat="student in studentsCtrl.students">
+                                <div class="well student">
+                                    <h3>{{student.name}}</h3>
+                                    <h4>{{student.email}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div ng-controller="JournalsController as journalsCtrl" ng-show="rootCtrl.isActive('journals')">
+                        <h4>{{journalsCtrl.intro.title}}</h4>
+                        <p>{{journalsCtrl.intro.subtitle}}</p>
+                        
+                        <div class="row">
+                            <div class="col-lg-6" ng-repeat="journal in journalsCtrl.journals">
+                                <div class="well journal">
+                                    <h3>{{journal.title}}</h3>
+                                    <h4>Type: {{journal.type}}</h4>
+                                    <h5>ISSN: {{journal.ISSN}}</h5>
+                                    <h5>Total documents: {{journal.total_doc}}</h5>
+                                    <h5>Average Citations: {{journal.avg_cit}}</h5>
+                                    <h5>Country of Origin: {{journal.country}}</h5>
+                                    <h5>Cost per Document: R{{journal.cost_doc}}</h5>
+                                    <a ng-hide="rootCtrl.isTokenType('employee')" href ng:click="journalsCtrl.buyJournal(journal)" class="btn-primary btn">Buy Item</a>
+                                    <a ng-hide="rootCtrl.isTokenType('student')" href ng:click="" class="btn-primary btn">Edit Item</a>&nbsp;<a ng-hide="rootCtrl.isTokenType('student')" href ng:click="" class="btn-danger btn"><i class="fa fa-trash-o fa-sm"></i> Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div ng-controller="PapersController as papersCtrl" ng-show="rootCtrl.isActive('papers')">
+                        <h4>{{papersCtrl.intro.title}}</h4>
+                        <p>{{papersCtrl.intro.subtitle}}</p>
+                        
+                        <div class="row">
+                            <div class="col-lg-4" ng-repeat="paper in papersCtrl.papers">
+                                <div class="well paper">
+                                    <h3>{{paper.subject}}</h3>
+                                    <h4>Type: {{paper.type}}</h4>
+                                    <h5>Year: {{paper.year}}</h5>
+                                    <h5>Semester: {{paper.semester}}</h5>
+                                    <h5>Cost to buy: {{paper.cost_buy}}</h5>
+                                    <a ng-hide="rootCtrl.isTokenType('employee')" href ng:click="papersCtrl.buyPaper(paper)" class="btn-primary btn">Buy Item</a>
+                                    <a ng-hide="rootCtrl.isTokenType('student')" href ng:click="" class="btn-primary btn">Edit Item</a>&nbsp;<a ng-hide="rootCtrl.isTokenType('student')" href ng:click="" class="btn-danger btn"><i class="fa fa-trash-o fa-sm"></i> Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                        <div ng-controller="ShopController as shopCtrl" ng-show="rootCtrl.isActive('carts')">
+                            <h4>{{shopCtrl.intro.title}}</h4>
+                            <p>{{shopCtrl.intro.subtitle}}</p>
+                            
+                            <div class="row">
+                                <div class="col-lg-4" ng-repeat="cart in shopCtrl.carts">
+                                    <div class="well cart">
+                                        <h3>{{cart.item_type}}</h3>
+                                        <h4>Cost:&nbsp;R{{cart.item_cost}}</h4>
+                                        <h6>Type:&nbsp;{{cart.cost_type}}</h6>
+                                        <h6>qty:&nbsp;{{cart.quantity}}</h6>
+                                        <hr>
+                                        <h6>Total:&nbsp;{{cart.item_cost * cart.quantity}}</h6>
+                                        <a href ng:click="bookCtrl.removeBook(book)" class="btn-danger btn"><i class="fa fa-trash-o fa-sm"></i></a>
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
+                        <hr>
+                        <h4 ng-show="rootCtrl.isActive('carts')">Total: </h4>
+                    </div>
+                </div>
+            </div>        
+    </body>
+</html>
